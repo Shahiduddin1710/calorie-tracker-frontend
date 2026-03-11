@@ -167,7 +167,7 @@ export default function LandingPage() {
               style={{ width: '24px', height: '24px', borderRadius: '6px', objectFit: 'cover' }} />
             <span className="text-sm font-semibold">CalorieTrack</span>
           </div>
-          <p className="text-xs" style={{ color: 'var(--text-faint)' }}>© 2024 CalorieTrack. All rights reserved.</p>
+          <p className="text-xs" style={{ color: 'var(--text-faint)' }}>© 2026 CalorieTrack. All rights reserved.</p>
         </div>
       </footer>
     </div>
