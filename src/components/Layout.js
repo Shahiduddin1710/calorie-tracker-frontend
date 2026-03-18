@@ -92,7 +92,7 @@ export default function Layout() {
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <img src="/photo.png" alt="CalorieTrack" className="mobile-header-logo" />
+          <img src="/logo192.png" alt="CalorieTrack" className="mobile-header-logo" />
           <span className="mobile-header-brand">CalorieTrack</span>
         </header>
 
