@@ -1,0 +1,278 @@
+.foods-container {
+  padding: 24px;
+  max-width: 860px;
+  margin: 0 auto;
+  color: #111827;
+}
+
+.foods-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.foods-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.foods-sub {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.foods-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 640px) {
+  .foods-filters {
+    flex-direction: row;
+  }
+}
+
+.foods-search-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.foods-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+.foods-search-input {
+  width: 100%;
+  padding: 10px 16px 10px 36px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #111827;
+  background: #f9fafb;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.foods-search-input:focus {
+  border-color: #2dd4bf;
+  background: #ffffff;
+}
+
+.category-select {
+  padding: 10px 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #111827;
+  background: #f9fafb;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .category-select {
+    width: 176px;
+  }
+}
+
+.category-select:focus {
+  border-color: #2dd4bf;
+}
+
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-row {
+  height: 64px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 0;
+}
+
+.empty-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: #9ca3af;
+}
+
+.empty-title {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.empty-sub {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.foods-list {
+  overflow: hidden;
+}
+
+.food-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  transition: background-color 0.15s;
+}
+
+.food-row:hover {
+  background-color: #f9fafb;
+}
+
+.food-row-left {
+  min-width: 0;
+  flex: 1;
+}
+
+.food-row-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.food-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.food-serving {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 2px;
+  text-transform: capitalize;
+}
+
+.food-row-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: 16px;
+  flex-shrink: 0;
+}
+
+.food-macros {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  font-family: monospace;
+}
+
+@media (min-width: 640px) {
+  .food-macros {
+    display: flex;
+  }
+}
+
+.food-kcal {
+  font-size: 13px;
+  font-weight: 700;
+  font-family: monospace;
+  color: #111827;
+}
+
+.modal-form {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.form-input {
+  padding: 10px 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #111827;
+  background: #f9fafb;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: #2dd4bf;
+  background: #ffffff;
+}
+
+.nutrition-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+}
+
+.nutrition-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.submit-btn {
+  width: 100%;
+  font-size: 13px;
+  padding: 12px;
+}

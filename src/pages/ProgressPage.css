@@ -1,0 +1,120 @@
+.progress-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  color: #111827;
+}
+
+.progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.progress-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.progress-sub {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.range-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background-color: #f3f4f6;
+}
+
+.range-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.range-btn-active {
+  background-color: #2dd4bf;
+  color: #ffffff;
+}
+
+.range-btn-inactive {
+  background-color: transparent;
+  color: #9ca3af;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: #d1d5db;
+  margin-top: 2px;
+}
+
+.chart-card {
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.chart-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.chart-skeleton {
+  height: 208px;
+  border-radius: 12px;
+}
+
+.chart-tooltip {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.chart-tooltip-label {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-bottom: 8px;
+}
+
+.chart-tooltip-item {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 2px 0;
+}

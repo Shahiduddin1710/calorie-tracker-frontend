@@ -1,0 +1,235 @@
+.dashboard-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.dashboard-greeting {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.dashboard-date {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.dashboard-top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .dashboard-top-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.calorie-card {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.circle-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.circle-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.circle-sub {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.calorie-info-label {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+.calorie-remaining {
+  font-size: 30px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.calorie-sub {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.over-goal-text {
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 4px;
+}
+
+.macros-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.macros-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.macro-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.macro-bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.macro-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.macro-value {
+  font-size: 11px;
+  font-family: monospace;
+  color: #6b7280;
+}
+
+.macro-bar-track {
+  height: 8px;
+  border-radius: 9999px;
+  background-color: #f3f4f6;
+  overflow: hidden;
+}
+
+.macro-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.7s ease;
+}
+
+.meal-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .meal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.meal-card {
+  padding: 16px;
+  display: block;
+  text-decoration: none;
+  transition: box-shadow 0.2s;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.meal-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.meal-card-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #9ca3af;
+  margin-bottom: 8px;
+}
+
+.meal-card-cals {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.meal-card-unit {
+  font-size: 11px;
+  color: #d1d5db;
+}
+
+.profile-banner {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-color: #2dd4bf;
+  background-color: #f0fdfa;
+  gap: 16px;
+}
+
+.profile-banner-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.profile-banner-sub {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.dashboard-loading {
+  padding: 24px;
+}
+
+.skeleton-title {
+  height: 32px;
+  width: 256px;
+  margin-bottom: 16px;
+}
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.skeleton-card {
+  height: 176px;
+}
+
+.progress-ring-circle {
+  transition: stroke-dashoffset 0.7s ease;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
