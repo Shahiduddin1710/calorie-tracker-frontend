@@ -18,7 +18,7 @@ export default function FoodLogPage() {
   const [addModal, setAddModal] = useState(null)
   const [searchQ, setSearchQ] = useState('')
   const [searchResults, setSearchResults] = useState([])
-  const [searching, setSearching] = useState(false)
+  const [searching, setSearching] = useState(false) 
   const [selectedFood, setSelectedFood] = useState(null)
   const [servings, setServings] = useState(1)
   const [addingLog, setAddingLog] = useState(false)
