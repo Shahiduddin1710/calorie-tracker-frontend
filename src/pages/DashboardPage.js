@@ -54,14 +54,15 @@ export default function DashboardPage() {
       const res = await api.get(`/log/${today}`)
       setData(res.data)
     } catch {
-      setData({ totals: { calories: 0, protein: 0, carbs: 0, fat: 0 }, allLogs: [] })
+      setData({ totals: { calories: 0, protein: 0, carbs: 0, fat: 0, caloriesBurned: 0, netCalories: 0 }, allLogs: [], activityLogs: [] })
     } finally {
       setLoading(false)
     }
   }
 
-  const totals = data?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0 }
-  const remaining = Math.max(calorieGoal - totals.calories, 0)
+  const totals = data?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0, caloriesBurned: 0, netCalories: 0 }
+  const netCalories = totals.netCalories || 0
+  const remaining = calorieGoal - netCalories
   const greetingHour = new Date().getHours()
   const greeting = greetingHour < 12 ? 'Good morning' : greetingHour < 17 ? 'Good afternoon' : 'Good evening'
   const firstName = user?.name?.split(' ')[0] || 'there'
@@ -83,30 +84,46 @@ export default function DashboardPage() {
           <h1 className="dashboard-greeting">{greeting}, {firstName}</h1>
           <p className="dashboard-date">{format(new Date(), 'EEEE, MMMM d')}</p>
         </div>
-        <Link to="/log" className="btn-primary log-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          Log food
-        </Link>
+        <div className="dashboard-header-actions">
+          <Link to="/activity" className="btn-secondary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+            Activity
+          </Link>
+          <Link to="/log" className="btn-primary log-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Log food
+          </Link>
+        </div>
       </div>
 
       <div className="dashboard-top-grid">
         <div className="card calorie-card">
           <div className="circle-wrapper">
-            <CircleProgress value={totals.calories} max={calorieGoal} size={110} strokeWidth={9}
-              color={totals.calories > calorieGoal ? '#ef4444' : '#2dd4bf'} />
+            <CircleProgress value={netCalories} max={calorieGoal} size={110} strokeWidth={9}
+              color={netCalories > calorieGoal ? '#ef4444' : '#2dd4bf'} />
             <div className="circle-center">
-              <span className="circle-number">{Math.round(totals.calories)}</span>
-              <span className="circle-label">eaten</span>
+              <span className="circle-number">{Math.round(netCalories)}</span>
+              <span className="circle-label">net</span>
             </div>
           </div>
           <div className="calorie-info">
-            <p className="calorie-info-label">Daily Calories</p>
+            <p className="calorie-info-label">Net Calories</p>
             <p className="calorie-remaining">{Math.round(remaining)}</p>
             <p className="calorie-sub">remaining of {calorieGoal}</p>
-            {totals.calories > calorieGoal && (
-              <p className="over-goal">{Math.round(totals.calories - calorieGoal)} over goal</p>
+            {netCalories > calorieGoal && (
+              <p className="over-goal">{Math.round(netCalories - calorieGoal)} over goal</p>
+            )}
+            {totals.caloriesBurned > 0 && (
+              <div className="burned-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+                {Math.round(totals.caloriesBurned)} kcal burned
+              </div>
             )}
           </div>
         </div>
@@ -118,6 +135,25 @@ export default function DashboardPage() {
           <MacroBar label="Fat" value={totals.fat} goal={fatGoal} color="#f59e0b" />
         </div>
       </div>
+
+      {totals.caloriesBurned > 0 && (
+        <div className="card calorie-breakdown-card">
+          <div className="breakdown-item">
+            <span className="breakdown-label">Consumed</span>
+            <span className="breakdown-value breakdown-consumed">{Math.round(totals.calories)} kcal</span>
+          </div>
+          <div className="breakdown-minus">−</div>
+          <div className="breakdown-item">
+            <span className="breakdown-label">Burned</span>
+            <span className="breakdown-value breakdown-burned">{Math.round(totals.caloriesBurned)} kcal</span>
+          </div>
+          <div className="breakdown-equals">=</div>
+          <div className="breakdown-item">
+            <span className="breakdown-label">Net</span>
+            <span className="breakdown-value breakdown-net">{Math.round(netCalories)} kcal</span>
+          </div>
+        </div>
+      )}
 
       <div className="meal-grid">
         {[

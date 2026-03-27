@@ -45,10 +45,13 @@ export default function ProgressPage() {
   const chartData = Array.from({ length: range }, (_, i) => {
     const d = format(subDays(new Date(), range - 1 - i), 'yyyy-MM-dd')
     const label = format(subDays(new Date(), range - 1 - i), range <= 7 ? 'EEE' : 'MM/dd')
-    const s = stats[d] || { calories: 0, protein: 0, carbs: 0, fat: 0 }
+    const s = stats[d] || { calories: 0, protein: 0, carbs: 0, fat: 0, caloriesBurned: 0 }
+    const net = Math.max((s.calories || 0) - (s.caloriesBurned || 0), 0)
     return {
       date: label,
       Calories: Math.round(s.calories),
+      Burned: Math.round(s.caloriesBurned || 0),
+      Net: Math.round(net),
       Protein: Math.round(s.protein),
       Carbs: Math.round(s.carbs),
       Fat: Math.round(s.fat),
@@ -59,14 +62,15 @@ export default function ProgressPage() {
   const logged = chartData.filter(d => d.Calories > 0)
   const avgCalories = logged.length ? Math.round(logged.reduce((s, d) => s + d.Calories, 0) / logged.length) : 0
   const avgProtein = logged.length ? Math.round(logged.reduce((s, d) => s + d.Protein, 0) / logged.length) : 0
-  const daysOnTrack = chartData.filter(d => d.Calories > 0 && d.Calories <= calorieGoal * 1.05).length
+  const totalBurned = chartData.reduce((s, d) => s + d.Burned, 0)
+  const daysOnTrack = chartData.filter(d => d.Net > 0 && d.Net <= calorieGoal * 1.05).length
 
   return (
     <div className="progress-container">
       <div className="progress-header">
         <div>
           <h1 className="progress-title">Progress</h1>
-          <p className="progress-sub">Your nutrition trends</p>
+          <p className="progress-sub">Your nutrition & activity trends</p>
         </div>
         <div className="range-tabs">
           {[7, 14, 30].map(r => (
@@ -82,6 +86,7 @@ export default function ProgressPage() {
         {[
           { label: 'Avg Calories', value: `${avgCalories}`, sub: `Goal: ${calorieGoal}`, color: '#111827' },
           { label: 'Avg Protein', value: `${avgProtein}g`, sub: 'per day', color: '#22c55e' },
+          { label: 'Total Burned', value: `${Math.round(totalBurned)}`, sub: `${range}d activity`, color: '#ef4444' },
           { label: 'On Track', value: `${daysOnTrack}/${logged.length}`, sub: 'days logged', color: '#0d9488' }
         ].map(stat => (
           <div key={stat.label} className="card stat-card">
@@ -93,7 +98,7 @@ export default function ProgressPage() {
       </div>
 
       <div className="card chart-card">
-        <h2 className="chart-title">Calorie Intake</h2>
+        <h2 className="chart-title">Calorie Intake vs Burned</h2>
         {loading ? (
           <div className="skeleton chart-skeleton" />
         ) : (
@@ -104,12 +109,23 @@ export default function ProgressPage() {
                   <stop offset="5%" stopColor="#22c55e" stopOpacity={0.25} />
                   <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
                 </linearGradient>
+                <linearGradient id="burnGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="netGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
               <XAxis dataKey="date" tick={{ fill: tickColor, fontSize: 11 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: tickColor, fontSize: 11 }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
+              <Legend wrapperStyle={{ fontSize: '12px', color: '#6b7280' }} />
               <Area type="monotone" dataKey="Calories" stroke="#22c55e" strokeWidth={2} fill="url(#calGrad)" dot={{ fill: '#22c55e', r: 3 }} />
+              <Area type="monotone" dataKey="Burned" stroke="#ef4444" strokeWidth={2} fill="url(#burnGrad)" dot={{ fill: '#ef4444', r: 3 }} />
+              <Area type="monotone" dataKey="Net" stroke="#3b82f6" strokeWidth={2} fill="url(#netGrad)" dot={{ fill: '#3b82f6', r: 3 }} />
               <Area type="monotone" dataKey="Goal" stroke={tickColor} strokeWidth={1} strokeDasharray="4 4" fill="none" dot={false} />
             </AreaChart>
           </ResponsiveContainer>

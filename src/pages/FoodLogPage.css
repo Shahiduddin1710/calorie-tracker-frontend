@@ -53,6 +53,7 @@
   margin-top: 2px;
 }
 
+/* ── Summary Card ── */
 .summary-card {
   padding: 16px;
   margin-bottom: 24px;
@@ -60,30 +61,56 @@
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
   text-align: center;
   margin-bottom: 12px;
 }
 
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.summary-item-burned {
+  border-left: 1px solid #f3f4f6;
+  padding-left: 4px;
+}
+
 .summary-number {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #111827;
   font-family: monospace;
+  line-height: 1;
+}
+
+.summary-number-burned {
+  color: #f97316;
+  font-size: 16px;
+}
+
+.burned-pill {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: #f97316;
 }
 
 .summary-label {
   font-size: 11px;
   color: #9ca3af;
-  margin-top: 4px;
 }
 
+/* ── Progress bar ── */
 .progress-track {
   height: 6px;
   border-radius: 9999px;
   background-color: #f3f4f6;
   overflow: hidden;
+  margin-bottom: 10px;
 }
 
 .progress-fill {
@@ -92,6 +119,41 @@
   transition: width 0.7s ease;
 }
 
+/* ── Net formula row ── */
+.net-formula {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #f3f4f6;
+  margin-top: 2px;
+}
+
+.net-formula-part {
+  font-size: 11px;
+  color: #6b7280;
+  font-family: monospace;
+}
+
+.net-formula-op {
+  font-size: 11px;
+  color: #d1d5db;
+  font-weight: 600;
+}
+
+.net-formula-burned {
+  color: #f97316;
+}
+
+.net-formula-net {
+  color: #2dd4bf;
+  font-weight: 700;
+}
+
+/* ── Skeleton ── */
 .skeleton-list {
   display: flex;
   flex-direction: column;
@@ -102,6 +164,7 @@
   height: 96px;
 }
 
+/* ── Meal sections ── */
 .meal-sections {
   display: flex;
   flex-direction: column;
@@ -253,10 +316,12 @@
   color: #0d9488;
 }
 
+/* ── Modal ── */
 .modal-body {
   padding: 16px;
 }
 
+/* ── Search ── */
 .search-wrapper {
   position: relative;
   margin-bottom: 12px;
@@ -268,6 +333,7 @@
   top: 50%;
   transform: translateY(-50%);
   color: #9ca3af;
+  pointer-events: none;
 }
 
 .search-input {
@@ -280,7 +346,7 @@
   background: #f9fafb;
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.2s;
 }
 
 .search-input:focus {
@@ -297,18 +363,44 @@
   animation: spin 1s linear infinite;
 }
 
+.search-clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e5e7eb;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0;
+  transition: background 0.15s;
+}
+
+.search-clear-btn:hover {
+  background: #d1d5db;
+  color: #111827;
+}
+
+/* ── Search results ── */
 .search-results {
-  max-height: 208px;
+  max-height: 220px;
   overflow-y: auto;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
   margin-bottom: 12px;
+  background: #fff;
 }
 
 .search-result-item {
   width: 100%;
   text-align: left;
-  padding: 12px 16px;
+  padding: 11px 16px;
   border: none;
   border-bottom: 1px solid #f3f4f6;
   background: transparent;
@@ -316,21 +408,29 @@
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition: background-color 0.15s;
+  transition: background-color 0.12s;
+  gap: 8px;
 }
 
 .search-result-item:hover {
-  background-color: #f9fafb;
+  background-color: #f0fdfa;
 }
 
 .search-result-item:last-child {
   border-bottom: none;
 }
 
+.result-left {
+  min-width: 0;
+}
+
 .result-name {
   font-size: 13px;
   font-weight: 500;
   color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .result-serving {
@@ -340,11 +440,43 @@
 }
 
 .result-cals {
-  font-size: 13px;
+  font-size: 12px;
   font-family: monospace;
+  color: #6b7280;
+  white-space: nowrap;
+  flex-shrink: 0;
+  background: #f3f4f6;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+/* ── Search highlight ── */
+.search-highlight {
+  background: #fef08a;
+  color: #111827;
+  border-radius: 2px;
+  padding: 0 1px;
+  font-style: normal;
+}
+
+/* ── Search empty state ── */
+.search-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px;
+  color: #9ca3af;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.search-empty strong {
   color: #6b7280;
 }
 
+/* ── Selected food ── */
 .selected-food-card {
   border-radius: 12px;
   padding: 16px;
@@ -444,4 +576,9 @@
   width: 100%;
   font-size: 13px;
   padding: 12px;
+}
+
+@keyframes spin {
+  from { transform: translateY(-50%) rotate(0deg); }
+  to { transform: translateY(-50%) rotate(360deg); }
 }

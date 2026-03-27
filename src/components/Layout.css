@@ -207,6 +207,7 @@
   background-color: #ffffff;
   border-bottom: 1px solid #e5e7eb;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 @media (min-width: 1024px) {
@@ -237,9 +238,31 @@
   font-size: 14px;
   color: #111827;
   flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .layout-content {
   flex: 1;
   overflow-y: auto;
+}
+
+
+
+.mobile-header-logo {
+  flex-shrink: 0;
+}
+
+.mobile-menu-btn {
+  flex-shrink: 0;
+}
+
+
+.mobile-header {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.card {
+  border-radius: 16px;
 }

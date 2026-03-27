@@ -12,21 +12,26 @@ export default function FoodsPage() {
   const [category, setCategory] = useState('all')
   const [showCreate, setShowCreate] = useState(false)
   const [creating, setCreating] = useState(false)
-  const [form, setForm] = useState({ name: '', brand: '', servingSize: 100, servingUnit: 'g', category: 'other', calories: '', protein: '', carbs: '', fat: '', fiber: '' })
+  const [form, setForm] = useState({
+    name: '', brand: '', servingSize: 100, servingUnit: 'g',
+    category: 'other', calories: '', protein: '', carbs: '', fat: '', fiber: ''
+  })
   const searchTimeout = useRef(null)
 
-  useEffect(() => { searchFoods() }, [category])
+  useEffect(() => { searchFoods('') }, [category])
 
-  const searchFoods = async (q = searchQ) => {
+  const searchFoods = async (q) => {
     setLoading(true)
     try {
       const params = new URLSearchParams({ limit: 30 })
-      if (q.trim()) params.append('q', q.trim())
+      if (q !== undefined && q.trim()) params.append('q', q.trim())
       if (category !== 'all') params.append('category', category)
       const res = await api.get(`/food/search?${params}`)
-      setFoods(res.data.foods)
-    } catch {
+      setFoods(res.data.foods || [])
+    } catch (err) {
+      console.error('Search error:', err)
       toast.error('Failed to load foods.')
+      setFoods([])
     } finally {
       setLoading(false)
     }
@@ -44,14 +49,23 @@ export default function FoodsPage() {
     setCreating(true)
     try {
       await api.post('/food', {
-        name: form.name.trim(), brand: form.brand.trim(),
-        servingSize: parseFloat(form.servingSize), servingUnit: form.servingUnit, category: form.category,
-        nutrients: { calories: parseFloat(form.calories) || 0, protein: parseFloat(form.protein) || 0, carbs: parseFloat(form.carbs) || 0, fat: parseFloat(form.fat) || 0, fiber: parseFloat(form.fiber) || 0 }
+        name: form.name.trim(),
+        brand: form.brand.trim(),
+        servingSize: parseFloat(form.servingSize),
+        servingUnit: form.servingUnit,
+        category: form.category,
+        nutrients: {
+          calories: parseFloat(form.calories) || 0,
+          protein: parseFloat(form.protein) || 0,
+          carbs: parseFloat(form.carbs) || 0,
+          fat: parseFloat(form.fat) || 0,
+          fiber: parseFloat(form.fiber) || 0
+        }
       })
       toast.success(`${form.name} added.`)
       setShowCreate(false)
       setForm({ name: '', brand: '', servingSize: 100, servingUnit: 'g', category: 'other', calories: '', protein: '', carbs: '', fat: '', fiber: '' })
-      searchFoods()
+      searchFoods(searchQ)
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to create food.')
     } finally {

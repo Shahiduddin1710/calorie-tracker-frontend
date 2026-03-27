@@ -13,7 +13,7 @@ export default function FoodLogPage() {
   const { user } = useAuth()
   const [date, setDate] = useState(new Date())
   const [logs, setLogs] = useState({ breakfast: [], lunch: [], dinner: [], snack: [] })
-  const [totals, setTotals] = useState({ calories: 0, protein: 0, carbs: 0, fat: 0 })
+  const [totals, setTotals] = useState({ calories: 0, protein: 0, carbs: 0, fat: 0, caloriesBurned: 0, netCalories: 0 })
   const [loading, setLoading] = useState(true)
   const [addModal, setAddModal] = useState(null)
   const [searchQ, setSearchQ] = useState('')
@@ -23,6 +23,7 @@ export default function FoodLogPage() {
   const [servings, setServings] = useState(1)
   const [addingLog, setAddingLog] = useState(false)
   const searchTimeout = useRef(null)
+  const searchInputRef = useRef(null)
   const dateStr = format(date, 'yyyy-MM-dd')
 
   useEffect(() => { fetchLogs() }, [date])
@@ -32,7 +33,7 @@ export default function FoodLogPage() {
     try {
       const res = await api.get(`/log/${dateStr}`)
       setLogs(res.data.logs)
-      setTotals(res.data.totals)
+      setTotals(res.data.totals || { calories: 0, protein: 0, carbs: 0, fat: 0, caloriesBurned: 0, netCalories: 0 })
     } catch {
       toast.error('Failed to load food log.')
     } finally {
@@ -42,19 +43,20 @@ export default function FoodLogPage() {
 
   const handleSearch = (q) => {
     setSearchQ(q)
+    setSelectedFood(null)
     clearTimeout(searchTimeout.current)
     if (!q.trim()) { setSearchResults([]); return }
     searchTimeout.current = setTimeout(async () => {
       setSearching(true)
       try {
         const res = await api.get(`/food/search?q=${encodeURIComponent(q)}&limit=15`)
-        setSearchResults(res.data.foods)
+        setSearchResults(res.data.foods || [])
       } catch {
         toast.error('Search failed.')
       } finally {
         setSearching(false)
       }
-    }, 400)
+    }, 250)
   }
 
   const handleAddLog = async () => {
@@ -82,13 +84,37 @@ export default function FoodLogPage() {
     }
   }
 
-  const openAdd = (meal) => { setAddModal(meal); setSelectedFood(null); setSearchQ(''); setSearchResults([]); setServings(1) }
-  const closeModal = () => { setAddModal(null); setSelectedFood(null); setSearchQ('') }
+  const openAdd = (meal) => {
+    setAddModal(meal)
+    setSelectedFood(null)
+    setSearchQ('')
+    setSearchResults([])
+    setServings(1)
+    setTimeout(() => searchInputRef.current?.focus(), 100)
+  }
+
+  const closeModal = () => {
+    setAddModal(null)
+    setSelectedFood(null)
+    setSearchQ('')
+    setSearchResults([])
+  }
+
+  const selectFood = (food) => {
+    setSelectedFood(food)
+    setServings(food.servingSize || 100)
+    setSearchResults([])
+    setSearchQ(food.name)
+  }
 
   const calorieGoal = user?.profile?.dailyCalorieGoal || 2000
   const isToday = dateStr === format(new Date(), 'yyyy-MM-dd')
 
-  const selectFood = (food) => { setSelectedFood(food); setServings(food.servingSize || 100); setSearchResults([]); setSearchQ(food.name) }
+  const caloriesBurned = totals.caloriesBurned || 0
+  const netCalories = totals.netCalories ?? (totals.calories - caloriesBurned)
+  const remaining = calorieGoal - netCalories
+  const overGoal = netCalories > calorieGoal
+  const progressPct = Math.min((netCalories / calorieGoal) * 100, 100)
 
   const estimatedNutrients = selectedFood ? {
     calories: Math.round(selectedFood.nutrients.calories * servings / selectedFood.servingSize * 10) / 10,
@@ -97,8 +123,18 @@ export default function FoodLogPage() {
     fat: Math.round(selectedFood.nutrients.fat * servings / selectedFood.servingSize * 10) / 10
   } : null
 
-  const progressPct = Math.min((totals.calories / calorieGoal) * 100, 100)
-  const overGoal = totals.calories > calorieGoal
+  const highlightMatch = (text, query) => {
+    if (!query.trim()) return text
+    const idx = text.toLowerCase().indexOf(query.toLowerCase())
+    if (idx === -1) return text
+    return (
+      <>
+        {text.slice(0, idx)}
+        <mark className="search-highlight">{text.slice(idx, idx + query.length)}</mark>
+        {text.slice(idx + query.length)}
+      </>
+    )
+  }
 
   return (
     <div className="foodlog-container">
@@ -123,7 +159,7 @@ export default function FoodLogPage() {
           </div>
           <div className="summary-item">
             <p className="summary-number" style={{ color: overGoal ? '#ef4444' : '#2dd4bf' }}>
-              {Math.max(calorieGoal - Math.round(totals.calories), 0)}
+              {Math.round(remaining)}
             </p>
             <p className="summary-label">Remaining</p>
           </div>
@@ -135,10 +171,30 @@ export default function FoodLogPage() {
             <p className="summary-number" style={{ color: '#f59e0b' }}>{Math.round(totals.carbs)}g</p>
             <p className="summary-label">Carbs</p>
           </div>
+          <div className="summary-item summary-item-burned">
+            <div className="burned-pill">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+              <p className="summary-number summary-number-burned">−{Math.round(caloriesBurned)}</p>
+            </div>
+            <p className="summary-label">Burned</p>
+          </div>
         </div>
+
         <div className="progress-track">
           <div className="progress-fill" style={{ width: `${progressPct}%`, backgroundColor: overGoal ? '#ef4444' : '#2dd4bf' }} />
         </div>
+
+        {caloriesBurned > 0 && (
+          <div className="net-formula">
+            <span className="net-formula-part">{Math.round(totals.calories)} eaten</span>
+            <span className="net-formula-op">−</span>
+            <span className="net-formula-part net-formula-burned">{Math.round(caloriesBurned)} burned</span>
+            <span className="net-formula-op">=</span>
+            <span className="net-formula-part net-formula-net">{Math.round(netCalories)} net</span>
+          </div>
+        )}
       </div>
 
       {loading ? (
@@ -224,23 +280,47 @@ export default function FoodLogPage() {
                 <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
-                <input type="text" value={searchQ} onChange={e => handleSearch(e.target.value)}
-                  className="search-input" placeholder="Search foods..." autoFocus />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQ}
+                  onChange={e => handleSearch(e.target.value)}
+                  className="search-input"
+                  placeholder="Type to search, e.g. bana..."
+                  autoComplete="off"
+                  autoFocus
+                />
                 {searching && (
                   <svg className="search-spinner" width="16" height="16" fill="none" viewBox="0 0 24 24">
                     <circle className="spinner-track" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
                 )}
+                {searchQ && !searching && (
+                  <button className="search-clear-btn" onClick={() => { setSearchQ(''); setSearchResults([]); setSelectedFood(null); searchInputRef.current?.focus() }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                )}
               </div>
+
+              {searchQ && !searching && searchResults.length === 0 && !selectedFood && (
+                <div className="search-empty">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <p>No results for "<strong>{searchQ}</strong>"</p>
+                </div>
+              )}
 
               {searchResults.length > 0 && !selectedFood && (
                 <div className="search-results">
                   {searchResults.map(food => (
                     <button key={food._id} onClick={() => selectFood(food)} className="search-result-item">
-                      <div>
-                        <p className="result-name">{food.name}</p>
-                        <p className="result-serving">{food.servingSize}{food.servingUnit}</p>
+                      <div className="result-left">
+                        <p className="result-name">{highlightMatch(food.name, searchQ)}</p>
+                        <p className="result-serving">{food.servingSize}{food.servingUnit} · {food.category || 'Food'}</p>
                       </div>
                       <span className="result-cals">{food.nutrients.calories} kcal</span>
                     </button>
@@ -255,7 +335,7 @@ export default function FoodLogPage() {
                       <p className="selected-food-name">{selectedFood.name}</p>
                       <p className="selected-food-serving">Per {selectedFood.servingSize}{selectedFood.servingUnit}</p>
                     </div>
-                    <button onClick={() => { setSelectedFood(null); setSearchQ('') }} className="deselect-btn">
+                    <button onClick={() => { setSelectedFood(null); setSearchQ(''); setTimeout(() => searchInputRef.current?.focus(), 50) }} className="deselect-btn">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                       </svg>
