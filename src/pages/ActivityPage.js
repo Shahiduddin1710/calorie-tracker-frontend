@@ -91,7 +91,7 @@ export default function ActivityPage() {
   const fetchLogs = async () => {
     setLoading(true)
     try {
-      const res = await api.get(`/activity/${date}`)
+      const res = await api.get(`/activity/date/${date}`)
       setLogs(res.data.logs)
       setTotalBurned(res.data.totalBurned)
     } catch {
