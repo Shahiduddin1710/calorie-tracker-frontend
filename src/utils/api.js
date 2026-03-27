@@ -29,7 +29,7 @@ api.interceptors.response.use(
 )
 
 export const activityAPI = {
-  getByDate: (date) => api.get(`/activity/${date}`),
+  getByDate: (date) => api.get(`/activity/date/${date}`),
   getWeeklyStats: (startDate) => api.get(`/activity/stats/weekly?startDate=${startDate}`),
   add: (data) => api.post('/activity', data),
   delete: (id) => api.delete(`/activity/${id}`)
